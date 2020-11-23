@@ -1,21 +1,27 @@
 import glob
 
 import cv2
-size = (1170,795)
 
-img_array = []
-for filename in sorted(glob.glob("images/195909*.jpg")):
+# 画像の読み込みの準備
+img_list = []
+file_list = sorted(glob.glob("images/195909*.jpg"))
+
+# 画像を読み込んでリストに追加
+for filename in file_list:
     img = cv2.imread(filename)
-    height, width, layers = img.shape
     img = img[:795,:1170,:] #トリミング
-    #size = (width, height)
-    #print(size)
-    img_array.append(img)
-#print(len(img_array))
+    img_list.append(img)
 
-name = 'isewan.mp4'
-out = cv2.VideoWriter(name, cv2.VideoWriter_fourcc(*'mp4v'), 5.0, size)
+# 書き込みの準備
+movie_name = 'isewan.mp4'
+fps = 5.0
+size = (1170,795)
+out = cv2.VideoWriter(
+    movie_name, cv2.VideoWriter_fourcc(*'mp4v'),
+    fps, size)
 
-for i in range(len(img_array)):
-    out.write(img_array[i])
-out.release()
+# 動画を書き込み
+for img in img_list:
+    out.write(img)
+
+out.release() # 動画を保存
