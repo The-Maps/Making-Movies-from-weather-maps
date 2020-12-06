@@ -26,14 +26,15 @@ class MovieMaker:
         file_list = sorted(glob.glob(os.path.join(self.img_dir, "*.jpg")))
         for i in trange(len(file_list)):
             img = cv2.imread(file_list[i])
-            large_img = np.zeros([size[1] * 2, size[0] * 2, 3], dtype="uint8")
+            large_img = np.zeros([size[1], size[0], 3], dtype="uint8")
             # 画像のサイズが大きい場合はトリミング
             if img.shape[0] >= self.movie_size[1]:
                 img = img[:self.movie_size[1],:,:]
             if img.shape[1] >= self.movie_size[0]:
                 img = img[:,:self.movie_size[0],:]
             # resize
-            img = cv2.resize(img, size)
+            img = cv2.resize(img, (img.shape[1]*2, img.shape[0]*2))
+            
             # 画像の方が小さい分は黒色で埋める
             large_img[:img.shape[0], :img.shape[1], :] = img
             out.write(large_img)
