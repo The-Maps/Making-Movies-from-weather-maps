@@ -19,7 +19,7 @@ class MovieMaker:
     def write_movie(self, out_dir, movie_name):
         # 準備
         out_path = os.path.join(out_dir, movie_name + ".mp4")
-        size = self.movie_size
+        size = (self.movie_size[0] * 2, self.movie_size[1] * 2)
         out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, size)
         
         # 画像のパスのリストを取得
@@ -28,12 +28,12 @@ class MovieMaker:
             img = cv2.imread(file_list[i])
             large_img = np.zeros([size[1] * 2, size[0] * 2, 3], dtype="uint8")
             # 画像のサイズが大きい場合はトリミング
-            if img.shape[0] >= size[1]:
-                img = img[:size[1],:,:]
-            if img.shape[1] >= size[0]:
-                img = img[:,:size[0],:]
+            if img.shape[0] >= self.movie_size[1]:
+                img = img[:self.movie_size[1],:,:]
+            if img.shape[1] >= self.movie_size[0]:
+                img = img[:,:self.movie_size[0],:]
             # resize
-            img = cv2.resize(img, (size[0]*2, size[1]*2))
+            img = cv2.resize(img, size)
             # 画像の方が小さい分は黒色で埋める
             large_img[:img.shape[0], :img.shape[1], :] = img
             out.write(large_img)
