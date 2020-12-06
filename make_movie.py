@@ -26,12 +26,14 @@ class MovieMaker:
         file_list = sorted(glob.glob(os.path.join(self.img_dir, "*.jpg")))
         for i in trange(len(file_list)):
             img = cv2.imread(file_list[i])
-            large_img = np.zeros([size[1], size[0], 3], dtype="uint8")
+            large_img = np.zeros([size[1] * 2, size[0] * 2, 3], dtype="uint8")
             # 画像のサイズが大きい場合はトリミング
             if img.shape[0] >= size[1]:
                 img = img[:size[1],:,:]
             if img.shape[1] >= size[0]:
                 img = img[:,:size[0],:]
+            # resize
+            img = cv2.resize(img, (size[0]*2, size[1]*2))
             # 画像の方が小さい分は黒色で埋める
             large_img[:img.shape[0], :img.shape[1], :] = img
             out.write(large_img)
@@ -42,8 +44,8 @@ class MovieMaker:
 if __name__ == "__main__":
     # 入力用の情報と動画の設定
     img_dir = os.path.join(os.path.dirname(__file__), "data") # 実行ファイルと同ディレクトリのdataディレクトリを選択
-    movie_size = (1000, 800)
-    fps = 1.0
+    movie_size = (1280, 960)
+    fps = 30.0
     MM = MovieMaker(img_dir, movie_size, fps)
     
     # 出力用の情報
